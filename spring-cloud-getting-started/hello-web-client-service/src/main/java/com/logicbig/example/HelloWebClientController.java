@@ -3,6 +3,7 @@ package com.logicbig.example;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,23 +14,28 @@ import java.util.List;
 
 @Controller
 public class HelloWebClientController {
-    @Autowired
-    private DiscoveryClient discoveryClient;
+	/*
+	 * @Autowired private DiscoveryClient discoveryClient;
+	 */
+	@Autowired
+	private LoadBalancerClient loadBalancer;
 
     @GetMapping("/")
     public String handleRequest(Model model) {
         //accessing hello-service
-        List<ServiceInstance> instances = discoveryClient.getInstances("hello-service");
-        if (instances != null && instances.size() > 0) {//todo: replace with a load balancing mechanism
-            ServiceInstance serviceInstance = instances.get(0);
+     //   List<ServiceInstance> instances = discoveryClient.getInstances("hello-service");
+      //  if (instances != null && instances.size() > 0) {//todo: replace with a load balancing mechanism
+        //    ServiceInstance serviceInstance = instances.get(0);
+    	 ServiceInstance serviceInstance=loadBalancer.choose("hello-service");
             String url = serviceInstance.getUri().toString();
             url = url + "/hello";
+            System.out.println(serviceInstance.getUri());
             RestTemplate restTemplate = new RestTemplate();
             HelloObject helloObject = restTemplate.getForObject(url,
                     HelloObject.class);
             model.addAttribute("msg", helloObject.getMessage());
             model.addAttribute("time", LocalDateTime.now());
-        }
+    //    }
         return "hello-page";
     }
 }
