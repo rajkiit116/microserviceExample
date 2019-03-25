@@ -31,10 +31,13 @@ public class HelloWebClientController {
             url = url + "/hello";
             System.out.println(serviceInstance.getUri());
             RestTemplate restTemplate = new RestTemplate();
-            HelloObject helloObject = restTemplate.getForObject(url,
+            HelloObject helloObject =new HelloObject();
+            for(int i=0;i<100;i++) {
+             helloObject = restTemplate.getForObject(url,
                     HelloObject.class);
             model.addAttribute("msg", helloObject.getMessage());
             model.addAttribute("time", LocalDateTime.now());
+            }
     //    }
         return "hello-page";
     }

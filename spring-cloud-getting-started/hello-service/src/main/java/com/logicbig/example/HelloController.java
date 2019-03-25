@@ -16,6 +16,7 @@ public class HelloController {
     @HystrixCommand(fallbackMethod="getDataFallBack")
     public HelloObject getHelloWordObject() {
         HelloObject hello = new HelloObject();
+        System.out.println("inside getHelloWordObject()");
         if(true)
         throw new RuntimeException();
         hello.setMessage("Hi there! you are number " + counter.incrementAndGet());
@@ -25,7 +26,7 @@ public class HelloController {
     public HelloObject getDataFallBack() {
     	  HelloObject hello = new HelloObject();
     	  System.out.println("inside getDataFallBack()");
-    	  counter.hashCode();
+    	  hello.setMessage(" HashCode Counter"+ counter.hashCode());
     	  return hello;
     }
 
